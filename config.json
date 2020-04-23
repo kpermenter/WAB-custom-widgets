@@ -162,11 +162,22 @@
                 "visible": true,
                 "position": {
                     "left": 7,
-                    "top": 175,
+                    "top": 150,
                     "width": 700,
                     "height": 550,
                     "relativeTo": "map"
             }
+        },
+        {
+            "uri": "widgets/HeatMap/Widget",
+            "name": "COVID-19 Analysis by Case",
+            "position": {
+                "left": 7,
+                "top": 195,
+                "width": 700,
+                "height": 550,
+                "relativeTo": "map"
+        }
         },
             {
                 "uri": "widgets/AttributeTable/Widget",

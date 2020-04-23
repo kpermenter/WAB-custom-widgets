@@ -1,17 +1,377 @@
-// All material copyright ESRI, All Rights Reserved, unless otherwise specified.
-// See http://@sbaseurl@/jsapi/jsapi/esri/copyright.txt and http://www.arcgis.com/apps/webappbuilder/copyright.txt for details.
-//>>built
-require({cache:{"url:widgets/ReportFeature/SelectFeatureDialog.html":'\x3cdiv\x3e\r\n\t\x3cp style\x3d"width:90%;height:25px;margin: 20px 5px 0px 7px;"\x3e${nls.chooseALayer}: \x3c/p\x3e\r\n\t\x3cselect data-dojo-attach-point\x3d"selectLayer"  class\x3d"jimu-input" style\x3d"width:90%;height:31px;margin: 5px 5px 5px 7px;"\x3e\r\n    \x3coption value\x3d""\x3e\x3c/option\x3e\r\n  \x3c/select\x3e\r\n  \r\n  \x3cp style\x3d"display: none;" data-dojo-attach-point\x3d"clickAFeatureNode"  style\x3d"width:90%;height:25px;margin: 5px 5px 5px 7px;" \x3e${nls.clickAFeature}\x3c/p\x3e\r\n  \x3cp class\x3d"drs-loading-features" style\x3d"display: none;" data-dojo-attach-point\x3d"loadingFeaturesNode" \x3e${nls.loadingFeatures}\x3c/p\x3e\r\n\x3c/div\x3e'}});
-define("dojo/_base/declare dojo/_base/array dojo/_base/lang dojo/on dojo/string dojo/dom-construct dojo/dom-style dijit/_WidgetBase dijit/_TemplatedMixin dojo/query dojo/i18n!esri/nls/jsapi esri/main esri/layers/FeatureLayer esri/toolbars/draw esri/tasks/IdentifyTask esri/tasks/query esri/tasks/IdentifyParameters esri/symbols/SimpleMarkerSymbol esri/symbols/SimpleLineSymbol esri/symbols/SimpleFillSymbol esri/geometry/Extent esri/tasks/datareviewer/ReviewerResultsTask ./InfoWindowContent dojo/text!./SelectFeatureDialog.html".split(" "),
-function(q,h,k,g,r,l,f,t,u,m,v,w,n,e,x,y,z,A,B,C,D,E,F,G){var H=new A({type:"esriSMS",style:"esriSMSCircle",size:12,xoffset:0,yoffset:0,color:[0,0,255,51],outline:{type:"esriSLS",style:"esriSLSSolid",color:[0,0,255,128],width:1}}),p=new B({type:"esriSLS",style:"esriSLSSolid",color:[0,0,255,51],width:2}),I=new C({type:"esriSFS",style:"esriSFSSolid",color:[0,0,255,26],outline:{type:"esriSLS",style:"esriSLSSolid",color:[0,0,255,128],width:1}});return q([t,u],{templateString:G,baseClass:"drs-widget-selectFeature",
-buildRendering:function(){this.inherited(arguments);this._initDom()},_initDom:function(){var a=this.getLayerOptions();void 0!==a&&""!==a&&l.place(a,this.selectLayer)},postCreate:function(){this.inherited(arguments);this._initEvents()},_initEvents:function(){var a=this;this.selectionToolbar=new e(this.map);this.selectionToolbar.on("draw-end",k.hitch(this,this.addGraphic));this.own(g(this.selectLayer,"change",function(b){v.toolbars.draw.addPoint=a.nls.selectFeatureMapPoint;(b=b.target.value)?a.startSelectFeature(b):
-a.cancelSelectFeature()}));this.own(g(this.map.infoWindow,"hide",function(){var b=m(".actionsPane");void 0!==b&&null!==b&&0<b.length&&(b[0].style.display="");a.emit("InfoWindowHide")}))},startSelectFeature:function(a){var b;b=h.filter(this.config.layers,function(b){return b.id===a});if(void 0!==b&&0<b.length&&(b=this.map.getLayer(a),void 0===b)){this.emit("Error",{},[this.nls.errorMapService]);return}this.selectionToolbar.activate(e.POINT);f.set(this.clickAFeatureNode,"display","")},addGraphic:function(a){var b=
-this.selectLayer.value,c=h.filter(this.config.layers,function(a){return a.id===b});a=a.geometry;if("ArcGISMapServiceLayer"===c[0].layerType)this.identifyTask=new x(c[0].url),this._identifyFeatures(a);else{null!==this.featureLayer&&void 0!==this.featureLayer&&(this.featureLayer=null);this.featureLayer=new n(c[0].url,{outFields:["*"],mode:w.layers.FeatureLayer.MODE_SELECTION});var c=new y,d=10*(this.map.extent.getWidth()/this.map.width);a=new D(a.x-d,a.y-d,a.x+d,a.y+d,this.map.spatialReference);c.geometry=
-a;this.featureLayer.selectFeatures(c,n.SELECTION_NEW,k.hitch(this,function(a){1<a.length?this.emit("Message",{},[this.nls.manyFeaturesSelected]):1===a.length?(this.selectionToolbar.deactivate(),this._onTaskComplete(a[0])):this.emit("Message",{},[this.nls.noFeatureSelected])}))}},cancelSelectFeature:function(){null!==this.selectionToolbar&&void 0!==this.selectionToolbar&&""===this.selectLayer.value&&this.selectionToolbar.deactivate();f.set(this.clickAFeatureNode,"display","none")},_identifyFeatures:function(a){var b=
-this,c=new z;this.identifying||(this.identifying=!0,f.set(this.loadingFeaturesNode,"display",""),c.returnGeometry=!0,c.width=this.map.width,c.height=this.map.height,c.tolerance=3,c.geometry=a,c.mapExtent=this.map.extent,c.spatialReference=this.map.spatialReference,this.identifyTask.execute(c).then(function(a){0<a.length?(b.selectionToolbar.deactivate(),b._onTaskComplete(a[0].feature)):(f.set(b.loadingFeaturesNode,"display","none"),b.identifying=!1,this.emit("Message",{},[this.nls.noFeatureSelected]))},
-function(a){b._onIdentifyError(a)}))},_onTaskComplete:function(a){var b=this,c,d;this.identifying=!1;f.set(this.loadingFeaturesNode,"display","none");if(a){var e=this.selectLayer.value,g=h.filter(this.config.layers,function(a){return a.id===e});this._selectedFeature=a;switch(a.geometry.type){case "point":a.setSymbol(H);d=a.geometry;c=this.map.centerAt(a.geometry);break;case "polyline":a.setSymbol(p);d=a.geometry.getExtent().getCenter();a.setSymbol(p);c=this.map.centerAt(d);break;case "polygon":a.setSymbol(I),
-d=a.geometry.getCentroid(),c=this.map.centerAt(d)}c.then(function(){b._showInfoWindow(g[0].alias,d,a)})}},_showInfoWindow:function(a,b,c){var d=this;this.infoWindowContent=new F({nls:this.nls,title:this.nls.select,includeReportedBy:this.config.includeReportedBy,defaultUserName:this.config.defaultUserName,onReportSubmit:function(a){d.submitReport(a)}},l.create("div"));this.map.infoWindow.setTitle(this.nls.infoWindowTitle);this.infoWindowContent.startup();this.infoWindowContent.set("layerName",a);this.infoWindowContent.set("graphic",
-c);g.once(this.map.infoWindow,"hide",function(){d.selectionToolbar.activate(e.POINT);d.map.setInfoWindowOnClick(!1)});this.map.infoWindow.destroyDijits();m(".actionsPane")[0].style.display="none";this.map.infoWindow.setContent(this.infoWindowContent.domNode);this.map.infoWindow.resize(300,600);this.map.infoWindow.show(b);this.emit("SelectFeature")},_onIdentifyError:function(a){this.identifying=!1;f.set(this.loadingFeaturesNode,"display","none");this.emit("Error",{},[this.nls.errorIdentify,a])},submitReport:function(a){var b=
-this;a.sessionId=this._sessionId;this.map.infoWindow.hide();this._reviewerResultsTask.writeFeatureAsResult(a,this._selectedFeature).then(function(a,d){b._onWriteFeatureAsResultComplete(a,d)},function(a){b._onWriteFeatureAsResultError(a)})},_onWriteFeatureAsResultComplete:function(a){a&&a.success?(this.emit("Message",{},["",this.nls.reportMessage]),this.selectionToolbar.activate(e.POINT)):this.emit("Error",{}[this.nls.errorReportMessage])},_onWriteFeatureAsResultError:function(a){this.selectionToolbar.activate(e.POINT);
-this.emit("Error",{},[a.message,a])},reset:function(){this.selectLayer.selectedIndex=0;this.cancelSelectFeature();void 0!==this.infoWindowContent&&null!==this.infoWindowContent&&this.infoWindowContent.destroyRecursive();this.map.setInfoWindowOnClick(!1)},setDrsUrl:function(a){this._reviewerResultsTask=new E(a)},setReviewerSession:function(a){isNaN(a)?this._sessionId=1:this._sessionId=parseInt(a,10)},getLayerOptions:function(){var a="";h.forEach(this.config.layers,function(b){!0===b.show&&(a+=r.substitute('\x3coption value\x3d"${id}"\x3e${alias}\x3c/option\x3e',
-b))});return a}})});
+///////////////////////////////////////////////////////////////////////////
+// Copyright © 2015 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+define([
+  'dojo/_base/declare',
+  'dojo/_base/array',
+  'dojo/_base/lang',
+  'dojo/on',
+  'dojo/string',
+  'dojo/dom-construct',
+  'dojo/dom-style',
+  'dijit/_WidgetBase',
+  'dijit/_TemplatedMixin',
+  'dojo/query',
+  'dojo/i18n!esri/nls/jsapi',
+  'esri/main',
+  'esri/layers/FeatureLayer',
+  'esri/toolbars/draw',
+  'esri/tasks/IdentifyTask',
+  'esri/tasks/query',
+  'esri/tasks/IdentifyParameters',
+  'esri/symbols/SimpleMarkerSymbol',
+  'esri/symbols/SimpleLineSymbol',
+  'esri/symbols/SimpleFillSymbol',
+  'esri/geometry/Extent',
+  'esri/tasks/datareviewer/ReviewerResultsTask',
+  './InfoWindowContent',
+  'dojo/text!./SelectFeatureDialog.html'
+], function(
+  declare, array, lang, on, string, domConstruct, domStyle,
+  _WidgetBase, _TemplatedMixin, query, esriBundle, esri, FeatureLayer, Draw,
+  IdentifyTask, Query, IdentifyParameters, SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol,
+  Extent, ReviewerResultsTask,
+  InfoWindowContent,
+  template
+) {
+  var symbolPoint = new SimpleMarkerSymbol({
+    "type": "esriSMS",
+    "style": "esriSMSCircle",
+    "size": 12,
+    "xoffset": 0,
+    "yoffset": 0,
+    "color": [0, 0, 255, 51],
+    "outline": {
+      "type": "esriSLS",
+      "style": "esriSLSSolid",
+      "color": [0, 0, 255, 128],
+      "width": 1
+    }
+  });
+  var symbolLine = new SimpleLineSymbol({
+    "type": "esriSLS",
+    "style": "esriSLSSolid",
+    "color": [0, 0, 255, 51],
+    "width": 2
+  });
+  var symbolPolygon = new SimpleFillSymbol({
+    "type": "esriSFS",
+    "style": "esriSFSSolid",
+    "color": [0, 0, 255, 26],
+    "outline": {
+      "type": "esriSLS",
+      "style": "esriSLSSolid",
+      "color": [0, 0, 255, 128],
+      "width": 1
+    }
+  });
+
+  return declare([_WidgetBase, _TemplatedMixin], {
+    templateString: template,
+    baseClass: 'drs-widget-selectFeature',
+
+    buildRendering: function() {
+      this.inherited(arguments);
+      this._initDom();
+    },
+
+    // populate layer options list
+    _initDom: function() {
+      domConstruct.place(this.getLayerOptions(), this.selectLayer);
+    },
+
+    // wire up events
+    postCreate: function() {
+      this.inherited(arguments);
+      this._initEvents();
+
+    },
+
+    // wire up events
+    _initEvents: function() {
+      var _this = this;
+      this.selectionToolbar = new Draw(this.map);
+      this.selectionToolbar.on("draw-end", lang.hitch(this, this.addGraphic));
+      this.own(on(this.selectLayer, 'change', function(e) {
+        esriBundle.toolbars.draw.addPoint = _this.nls.selectFeatureMapPoint;
+        var val = e.target.value;
+        if (val) {
+          _this.startSelectFeature(val);
+        } else {
+          _this.cancelSelectFeature();
+        }
+      }));
+
+      this.own(on(this.map.infoWindow, 'hide', function() {
+        var zoomNode = query('.actionsPane');
+        if(zoomNode !== undefined && zoomNode !== null && zoomNode.length > 0){
+          zoomNode[0].style.display = '';
+        }
+        _this.emit('InfoWindowHide');
+      }));
+
+    },
+
+    // get map layer
+    // init identify task
+    // if already listenting for map click, stop
+    // do identify on map click
+    // and show instructions
+    startSelectFeature: function(layerId) {
+      var mapLayer;
+      var layer = array.filter(this.config.layers, function(layer){
+        return layer.id === layerId;
+      });
+      if (layer !== undefined && layer.length > 0 &&
+      layer[0].layerType === "ArcGISMapServiceLayer"){
+        mapLayer = this.map.getLayer(layerId);
+        if (mapLayer === undefined){
+          this.emit('Error', {}, [this.nls.errorMapService]);
+          return;
+        }
+      }
+      this.selectionToolbar.activate(Draw.POINT);
+      domStyle.set(this.clickAFeatureNode, 'display', '');
+    },
+    addGraphic : function (evt){
+      var layerId = this.selectLayer.value;
+      var layer = array.filter(this.config.layers, function(layer){
+        return layer.id === layerId;
+      });
+      var geometry = evt.geometry;
+      if (layer[0].layerType === "ArcGISMapServiceLayer"){
+        this.identifyTask = new IdentifyTask(layer[0].url);
+        this._identifyFeatures(geometry);
+      }
+      else{
+        if (this.featureLayer !== null && this.featureLayer !== undefined){
+          this.featureLayer = null;
+        }
+        this.featureLayer = new FeatureLayer(layer[0].url, {outFields: ["*"],
+        mode: esri.layers.FeatureLayer.MODE_SELECTION});
+        var selectQuery = new Query();
+        var pixelWidth = this.map.extent.getWidth() / this.map.width;
+        var toleranceInMapCoords = 10 * pixelWidth;
+        var extent = new Extent(geometry.x - toleranceInMapCoords,
+                            geometry.y - toleranceInMapCoords,
+                            geometry.x + toleranceInMapCoords,
+                            geometry.y + toleranceInMapCoords,
+                            this.map.spatialReference);
+        selectQuery.geometry = extent;
+        this.featureLayer.selectFeatures(selectQuery,
+        FeatureLayer.SELECTION_NEW, lang.hitch(this, function(features){
+          if (features.length > 1){
+            this.emit(this.nls.popupMessage, {}, [this.nls.manyFeaturesSelected]);
+          }
+          else if(features.length === 1){
+            this.selectionToolbar.deactivate();
+            this._onTaskComplete(features[0]);
+          }
+          else{
+            this.emit(this.nls.popupMessage, {}, [this.nls.noFeatureSelected]);
+          }
+        }));
+      }
+    },
+    // if already listenting for map click, stop
+    // hide instructions
+    cancelSelectFeature: function() {
+      if (this.selectionToolbar !== null &&
+      this.selectionToolbar !== undefined && this.selectLayer.value === ""){
+        this.selectionToolbar.deactivate();
+      }
+      domStyle.set(this.clickAFeatureNode, 'display', 'none');
+    },
+
+    // block subsequent identify requests
+    // show loading message
+    // identify features at the point
+    _identifyFeatures: function(mapPoint) {
+      var _this = this;
+      var identifyParams = new IdentifyParameters();
+      if (this.identifying) {
+        return;
+      }
+      this.identifying = true;
+      domStyle.set(this.loadingFeaturesNode, 'display', '');
+      identifyParams.returnGeometry = true;
+      identifyParams.width = this.map.width;
+      identifyParams.height = this.map.height;
+      identifyParams.geometry = mapPoint;
+      identifyParams.mapExtent = this.map.extent;
+      identifyParams.spatialReference = this.map.spatialReference;
+      this.identifyTask.execute(identifyParams).then(function(results) {
+        if (results.length > 0 ){
+          _this.selectionToolbar.deactivate();
+          _this._onTaskComplete(results[0].feature);
+        }
+        else{
+          domStyle.set(_this.loadingFeaturesNode, 'display', 'none');
+          _this.identifying = false;
+          this.emit(this.nls.popupMessage, {}, [this.nls.noFeatureSelected]);
+        }
+      }, function(err) {
+        _this._onIdentifyError(err);
+      });
+    },
+
+    // allow subsequent identify requests
+    // hide loading message
+    // get first feature (if any) and
+    // zoom map to feature
+    // open report selected feature dialog
+    // notify main dialog that a feature was selected
+    _onTaskComplete: function (resultGraphic) {
+      var _this = this;
+      var def;
+      var point;
+      this.identifying = false;
+      domStyle.set(this.loadingFeaturesNode, 'display', 'none');
+      if (!resultGraphic ) {
+        return;
+      }
+      var layerId = this.selectLayer.value;
+      var layer = array.filter(this.config.layers, function(layer){
+        return layer.id === layerId;
+      });
+      this._selectedFeature = resultGraphic;
+      switch (resultGraphic.geometry.type) {
+        case 'point':
+          resultGraphic.setSymbol(symbolPoint);
+          point = resultGraphic.geometry;
+          def = this.map.centerAt(resultGraphic.geometry);
+          break;
+        case 'polyline':
+          resultGraphic.setSymbol(symbolLine);
+          point = resultGraphic.geometry.getExtent().getCenter();
+          resultGraphic.setSymbol(symbolLine);
+          def = this.map.centerAt(point);
+          break;
+        case 'polygon':
+          resultGraphic.setSymbol(symbolPolygon);
+          point = resultGraphic.geometry.getCentroid();
+          def = this.map.centerAt(point);
+          break;
+      }
+      // this.map.graphics.add(resultGraphic);
+      def.then(function() {
+        _this._showInfoWindow(layer[0].alias, point, resultGraphic);
+      });
+    },
+    // open popup to report selected feature
+    _showInfoWindow: function(layerName, point, resultGraphic) {
+      var _this = this;
+      this.infoWindowContent = new InfoWindowContent({
+        nls: this.nls,
+        title : this.nls.select,
+        includeReportedBy: this.config.includeReportedBy,
+        defaultUserName : this.config.defaultUserName,
+        onReportSubmit: function(reviewerAttributes) {
+          _this.submitReport(reviewerAttributes);
+        }
+      }, domConstruct.create('div'));
+
+      this.map.infoWindow.setTitle(this.nls.infoWindowTitle);
+      this.infoWindowContent.startup();
+      this.infoWindowContent.set('layerName', layerName);
+      this.infoWindowContent.set('graphic', resultGraphic);
+      on.once(this.map.infoWindow, 'hide', function() {
+        _this.selectionToolbar.activate(Draw.POINT);
+        _this.map.setInfoWindowOnClick(false);
+      });
+      this.map.infoWindow.destroyDijits();
+      query('.actionsPane')[0].style.display = 'none';
+      this.map.infoWindow.setContent(this.infoWindowContent.domNode);
+      this.map.infoWindow.resize(300, 600);
+      this.map.infoWindow.show(point);
+      this.emit('SelectFeature');
+    },
+
+    // allow subsequent identify requests
+    // hide loading message
+    // show error
+    _onIdentifyError: function(err) {
+      this.identifying = false;
+      domStyle.set(this.loadingFeaturesNode, 'display', 'none');
+      this.emit(this.nls.popupError, {}, [this.nls.errorIdentify, err]);
+    },
+
+    // Write selected feature as a Data Reviewer result
+    // using ReviewerAttributes from event
+    submitReport: function(reviewerAttributes) {
+      var _this = this;
+      reviewerAttributes.sessionId = this._sessionId;
+      this.map.infoWindow.hide();
+      this._reviewerResultsTask.writeFeatureAsResult(reviewerAttributes,
+      this._selectedFeature).then(function(result, token) {
+        _this._onWriteFeatureAsResultComplete(result, token);
+      }, function(err) {
+        _this._onWriteFeatureAsResultError(err);
+      });
+    },
+
+    // Show message on completion of writeFeatureAsResult
+    _onWriteFeatureAsResultComplete: function(result) {
+      if (result && result.success) {
+        this.emit(this.nls.popupMessage, {}, ['', this.nls.reportMessage]);
+        this.selectionToolbar.activate(Draw.POINT);
+      } else {
+        this.emit(this.nls.popupError, {} [this.nls.errorReportMessage]);
+      }
+    },
+
+    // Show error message if writeFeatureAsResult fails
+    _onWriteFeatureAsResultError: function(err) {
+      this.selectionToolbar.activate(Draw.POINT);
+      this.emit(this.nls.popupError, {}, [err.message, err]);
+    },
+
+    // reset form
+    reset: function() {
+      this.selectLayer.selectedIndex = 0;
+      this.cancelSelectFeature();
+      if (this.infoWindowContent !== undefined && this.infoWindowContent !== null){
+        this.infoWindowContent.destroyRecursive();
+      }
+      this.map.setInfoWindowOnClick(false);
+    },
+    // Set Data Reviewer Server url,
+    // required for ReviewerResultsTask.
+    setDrsUrl: function(drsUrl) {
+      this._reviewerResultsTask = new ReviewerResultsTask(drsUrl);
+    },
+
+    // Set Data Reviewer session results will be written to.
+    setReviewerSession: function(sessionId) {
+      if (!isNaN(sessionId)) {
+        this._sessionId = parseInt(sessionId, 10);
+      } else {
+        this._sessionId = 1; // default
+      }
+    },
+
+    // read layers from config into
+    // a document fragment consisting of options
+    getLayerOptions: function() {
+      var html = '';
+      array.forEach(this.config.layers, function(layer) {
+        if (layer.show === true){
+          html = html  + string.substitute('<option value="${id}">${alias}</option>', layer);
+        }
+      });
+      return html;
+    }
+  });
+});

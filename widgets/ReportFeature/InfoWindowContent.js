@@ -1,10 +1,182 @@
-// All material copyright ESRI, All Rights Reserved, unless otherwise specified.
-// See http://@sbaseurl@/jsapi/jsapi/esri/copyright.txt and http://www.arcgis.com/apps/webappbuilder/copyright.txt for details.
-//>>built
-require({cache:{"url:widgets/ReportFeature/InfoWindowContent.html":'\x3cdiv\x3e\r\n  \x3cform data-dojo-attach-point\x3d"formNode" class\x3d"drs-info-window-form"\x3e\r\n    \x3cdiv\x3e\r\n      \x3clabel\x3e${nls.layerLabel}\x3c/label\x3e\r\n      \x3cspan data-dojo-attach-point\x3d"layerNode" style\x3d"width:100%; padding: 0 3px 0 0;"\x3e\x3c/span\x3e\r\n    \x3c/div\x3e\r\n    \x3cdiv\x3e\r\n      \x3clabel\x3e${nls.reviewStatusLabel}\x3c/label\x3e\r\n      \x3cselect data-dojo-attach-point\x3d"statusNode" name\x3d"reviewStatus" class\x3d"jimu-input drs-infowindow-input drs-infowindow-input"\x3e\r\n        \x3coption\x3e\x3c/option\x3e\r\n      \x3c/select\x3e\r\n    \x3c/div\x3e\r\n    \x3cdiv\x3e\r\n      \x3clabel\x3e${nls.notesLabel}\x3c/label\x3e\r\n      \x3ctextarea data-dojo-attach-point\x3d"notesNode" name\x3d"notes" class\x3d"jimu-input drs-infowindow-input" rows\x3d"2" \x3e\x3c/textarea\x3e\r\n    \x3c/div\x3e\r\n    \x3cdiv\x3e\r\n      \x3clabel\x3e${nls.severityLabel}\x3c/label\x3e\r\n      \x3cselect data-dojo-attach-point\x3d"severityNode" name\x3d"severity" class\x3d"jimu-input drs-infowindow-input"\x3e\r\n        \x3coption\x3e1\x3c/option\x3e\r\n        \x3coption\x3e2\x3c/option\x3e\r\n        \x3coption\x3e3\x3c/option\x3e\r\n        \x3coption\x3e4\x3c/option\x3e\r\n        \x3coption selected\x3e5\x3c/option\x3e\r\n      \x3c/select\x3e\r\n    \x3c/div\x3e\r\n    \x3cdiv class\x3d"dynamicRow"\x3e\r\n      \x3clabel\x3e${nls.reportedByLabel}\x3c/label\x3e\r\n      \x3cinput type\x3d"text" data-dojo-attach-point\x3d"reportedByNode" name\x3d"reviewTechnician" class\x3d"jimu-input drs-infowindow-input"/\x3e\r\n    \x3c/div\x3e\r\n    \x3cdiv class\x3d"drs-buttons jimu-align-trailing"\x3e\r\n      \x3cinput type\x3d"submit" value\x3d"${nls.reportButton}" class\x3d"jimu-btn"/\x3e\r\n    \x3c/div\x3e\r\n  \x3c/form\x3e\r\n\x3c/div\x3e\r\n'}});
-define("dojo/_base/declare dojo/_base/array dojo/on dojo/dom-construct dojo/dom-class dojo/query dijit/_WidgetBase dijit/_TemplatedMixin esri/tasks/datareviewer/ReviewerAttributes dojo/text!./InfoWindowContent.html dojox/validate jimu/tokenUtils dojox/validate/check dojo/NodeList-dom".split(" "),function(f,g,h,k,l,d,m,n,p,q,r,e){return f([m,n],{baseClass:"drs-feature-info-window",templateString:q,infoTitle:null,_setGraphicAttr:function(a){this.setGraphic(a)},_setLayerNameAttr:function(a){this.setLayerName(a)},
-_setNlsAttr:function(a){this.setLocalizedStrings(a)},postCreate:function(){this.inherited(arguments);this._initEvents()},_initEvents:function(){var a=this;"logon"===this.includeReportedBy||"default"===this.includeReportedBy?this.showHideDynamicRows(!1):this.showHideDynamicRows(!0);this.own(h(this.formNode,"submit",function(b){b.preventDefault();a._onFormSubmit()}))},showHideDynamicRows:function(a){var b=d(".dynamicRow",this.formNode);if(void 0!==b&&null!==b&&0<b.length)for(var c=0;c<b.length;c++)b[c].style.display=
-a?"":"none"},setLayerName:function(a){this.formNode.reset();this.layerName=a;this.reviewerAttributes||(this.reviewerAttributes=new p);this.reviewerAttributes.resourceName=a;this.reviewerAttributes.severity=5;this.reviewerAttributes.lifecycleStatus=1;this.layerNode.innerHTML=this.layerName;this.statusNode.focus()},setGraphic:function(a){this.graphic=a},setLocalizedStrings:function(a){var b=this.params.title;this.statusNode.options.length=0;var c="";this.nls=a;if(b===this.nls.select)for(var d in a)-1<
-d.indexOf("selectReviewStatus")&&(c=c+"\x3coption\x3e"+a[d]+"\x3c/option\x3e");else for(var e in a)-1<e.indexOf("drawReviewStatus")&&(c=c+"\x3coption\x3e"+a[e]+"\x3c/option\x3e");c&&k.place(c,this.statusNode,"last")},_onFormSubmit:function(){if(this.isFormValid()){if("default"===this.includeReportedBy)this.reviewerAttributes.reviewTechnician=this.defaultUserName;else if("logon"===this.includeReportedBy){var a=e.getPortalCredential(e.getPortalUrl());this.reviewerAttributes.reviewTechnician=a.userId}else 0<
-this.reportedByNode.value.length&&(this.reviewerAttributes.reviewTechnician=this.reportedByNode.value);this.reviewerAttributes.notes=this.notesNode.value;this.reviewerAttributes.reviewStatus=this.statusNode.value;this.reviewerAttributes.severity=this.severityNode.value;this.emit("ReportSubmit",{},[this.reviewerAttributes])}},isFormValid:function(){var a={trim:["notes","reviewTechnician"],required:["reviewStatus"]},b;"user"===this.includeReportedBy&&a.required.push("reviewTechnician");a=r.check(this.formNode,
-a);b=a.hasMissing();d("input, select",this.formNode).removeClass("drs-input-err");b&&g.forEach(a.getMissing(),function(a){l.add(this.formNode[a],"drs-input-err")},this);return!b}})});
+///////////////////////////////////////////////////////////////////////////
+// Copyright © 2015 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+define([
+  'dojo/_base/declare',
+  'dojo/_base/array',
+  'dojo/on',
+  'dojo/dom-construct',
+  'dojo/dom-class',
+  'dojo/query',
+
+  'dijit/_WidgetBase',
+  'dijit/_TemplatedMixin',
+
+  'esri/tasks/datareviewer/ReviewerAttributes',
+
+  'dojo/text!./InfoWindowContent.html',
+
+  'dojox/validate',
+    'jimu/tokenUtils',
+  'dojox/validate/check',
+  'dojo/NodeList-dom'
+], function(
+  declare, array, on, domConstruct, domClass, query,
+  _WidgetBase, _TemplatedMixin,
+  ReviewerAttributes,
+  template,
+  validate, tokenUtils
+) {
+  return declare([_WidgetBase, _TemplatedMixin], {
+    baseClass: 'drs-feature-info-window',
+    templateString: template,
+    infoTitle: null,
+    // custom setters
+    _setGraphicAttr: function(newGraphic) {
+      this.setGraphic(newGraphic);
+    },
+    _setLayerNameAttr: function(layerName) {
+      this.setLayerName(layerName);
+    },
+    _setNlsAttr: function(nls) {
+      this.setLocalizedStrings(nls);
+    },
+    postCreate: function() {
+      this.inherited(arguments);
+      this._initEvents();
+    },
+
+    // wire up events
+    _initEvents: function() {
+      var _this = this;
+      if (this.includeReportedBy === "logon" || this.includeReportedBy === "default"){
+        this.showHideDynamicRows(false);
+      }
+      else{
+        this.showHideDynamicRows(true);
+      }
+
+      this.own(on(this.formNode, 'submit', function(e) {
+        e.preventDefault();
+        _this._onFormSubmit();
+      }));
+    },
+    showHideDynamicRows:function(bShowHide){
+      var dynamicRows = query(".dynamicRow", this.formNode);
+      //  var dynamicRows = query('.dynamicRow');
+      if(dynamicRows !== undefined && dynamicRows !== null && dynamicRows.length > 0){
+        for(var i = 0; i < dynamicRows.length; i++){
+          if(bShowHide){
+            dynamicRows[i].style.display = '';
+          }else {
+            dynamicRows[i].style.display = 'none';
+          }
+        }
+      }
+    },
+    // clear form
+    // Set layer name of selected feature.
+    setLayerName: function(layerName) {
+      this.formNode.reset();
+      this.layerName = layerName;
+      if (!this.reviewerAttributes) {
+        this.reviewerAttributes = new ReviewerAttributes();
+      }
+      this.reviewerAttributes.resourceName = layerName;
+      this.reviewerAttributes.severity = 5; // default
+      this.reviewerAttributes.lifecycleStatus = 1; // default
+      this.layerNode.innerHTML = this.layerName;
+      this.statusNode.focus();
+    },
+
+    // TODO: remove, not used by this widget
+    // get graphic to submit with report
+    setGraphic: function(newGraphic) {
+      this.graphic = newGraphic;
+    },
+
+    // set localized strings in form
+    // and populate the status drop down options
+    setLocalizedStrings: function(nls) {
+      var infoWindowTitle = this.params.title;
+      this.statusNode.options.length = 0;
+      var html = '';
+      this.nls = nls;
+      if (infoWindowTitle === this.nls.select){
+        for (var select in nls) {
+          if (select.indexOf('selectReviewStatus') > -1) {
+            html = html  + '<option>' + nls[select] + '</option>';
+          }
+        }
+      }
+      else{
+        for (var draw in nls) {
+          if (draw.indexOf('drawReviewStatus') > -1) {
+            html = html  + '<option>' + nls[draw] + '</option>';
+          }
+        }
+      }
+      if (html) {
+        domConstruct.place(html, this.statusNode, 'last');
+      }
+    },
+
+    // On click of button set ReviewerAttribute properties
+    // (including default reported by if needed)
+    // and dispatch reportButtonClicked event
+    _onFormSubmit: function() {
+      if (this.isFormValid()) {
+        if (this.includeReportedBy === "default") {
+          this.reviewerAttributes.reviewTechnician = this.defaultUserName;
+        }
+        else if (this.includeReportedBy ===  "logon" ){
+          var credential = tokenUtils.getPortalCredential(tokenUtils.getPortalUrl());
+          this.reviewerAttributes.reviewTechnician = credential.userId;
+        }
+        else {
+          if (0 < this.reportedByNode.value.length) {
+            this.reviewerAttributes.reviewTechnician = this.reportedByNode.value;
+          }
+        }
+        this.reviewerAttributes.notes = this.notesNode.value;
+        this.reviewerAttributes.reviewStatus = this.statusNode.value;
+        this.reviewerAttributes.severity = this.severityNode.value;
+        this.emit('ReportSubmit', {}, [this.reviewerAttributes]);
+      }
+    },
+
+    // make sure user supplied all required inputs
+    // highlight invalid fields
+    isFormValid: function() {
+      var profile = {
+        trim: [ 'notes', 'reviewTechnician' ],
+        required: [ 'reviewStatus' ]
+      };
+      var results, hasMissing;
+      if (this.includeReportedBy === "user") {
+        profile.required.push('reviewTechnician');
+      }
+      results = validate.check(this.formNode, profile);
+      hasMissing = results.hasMissing();
+      query('input, select', this.formNode).removeClass('drs-input-err');
+      if (hasMissing) {
+        array.forEach(results.getMissing(), function(name) {
+          domClass.add(this.formNode[name], 'drs-input-err');
+        }, this);
+      }
+      return !hasMissing;
+    }
+  });
+});
