@@ -1,0 +1,12 @@
+{
+  "name": "chartJS",
+  "platform": "HTML",
+  "version": "1.0",
+  "wabVersion": "2.7",
+  "properties": {
+    "hasSettingPage": false,
+    "hasSettingUIFile": false,
+    "hasSettingLocale": false,
+    "hasSettingStyle": false
+  }
+}
